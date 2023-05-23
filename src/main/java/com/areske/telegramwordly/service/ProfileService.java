@@ -12,35 +12,35 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProfileService {
 
-    private final ProfileRepository PROFILE_REPOSITORY;
+    private final ProfileRepository profileRepository;
 
     public Profile createProfile(Long chatId, String name) {
         Profile profile = new Profile(chatId, name);
-        PROFILE_REPOSITORY.save(profile);
+        profileRepository.save(profile);
         return profile;
     }
 
     public Optional<Profile> getProfile(Long chatId) {
-        return PROFILE_REPOSITORY.findByChatId(chatId);
+        return profileRepository.findByChatId(chatId);
     }
 
     @Transactional
     public void incrementWins(String name) {
-        Optional<Profile> optionalProfile = PROFILE_REPOSITORY.findByName(name);
+        Optional<Profile> optionalProfile = profileRepository.findByName(name);
         if (optionalProfile.isPresent()) {
             Profile currProfile = optionalProfile.get();
             currProfile.setWins(currProfile.getWins() + 1);
-            PROFILE_REPOSITORY.save(currProfile);
+            profileRepository.save(currProfile);
         }
     }
 
     @Transactional
     public void incrementGames(String name) {
-        Optional<Profile> optionalProfile = PROFILE_REPOSITORY.findByName(name);
+        Optional<Profile> optionalProfile = profileRepository.findByName(name);
         if (optionalProfile.isPresent()) {
             Profile currProfile = optionalProfile.get();
             currProfile.setGames(currProfile.getGames() + 1);
-            PROFILE_REPOSITORY.save(currProfile);
+            profileRepository.save(currProfile);
         }
     }
 

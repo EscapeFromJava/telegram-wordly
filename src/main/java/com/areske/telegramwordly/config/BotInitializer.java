@@ -12,13 +12,13 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Component
 @RequiredArgsConstructor
 public class BotInitializer {
-    private final TelegramBot TELEGRAM_BOT;
+    private final TelegramBot telegramBot;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
-            telegramBotsApi.registerBot(TELEGRAM_BOT);
+            telegramBotsApi.registerBot(telegramBot);
         } catch (TelegramApiException e) {
             throw new TelegramApiException(e);
         }

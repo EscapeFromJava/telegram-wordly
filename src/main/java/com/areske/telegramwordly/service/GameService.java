@@ -16,26 +16,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GameService {
 
-    private final SessionService SESSION_SERVICE;
-    private final ProfileService PROFILE_SERVICE;
-    private final ValidatorService VALIDATOR_SERVICE;
+    private final SessionService sessionService;
+    private final ProfileService profileService;
+    private final ValidatorService validatorService;
 
     @SneakyThrows
     public SendMessage sendWord(Long chatId, String word) {
-        Session currSession = SESSION_SERVICE.getSession(chatId).get();
+        Session currSession = sessionService.getSession(chatId).get();
         String answer;
 
-        if (!VALIDATOR_SERVICE.validateWord(word)) {
+        if (!validatorService.validateWord(word)) {
             answer = "Ваше слово не прошло валидацию";
         } else if (currSession.getCurrentWord().equals("")) {
             answer = "Введите команду /start чтобы начать игру";
         } else if (word.equalsIgnoreCase(currSession.getCurrentWord())) {
             answer = "Ты выиграл";
-            SESSION_SERVICE.clearSession(currSession, true);
+            sessionService.clearSession(currSession, true);
         } else if (word.length() != currSession.getCurrentWord().length()) {
             answer = incorrectWordLengthAnswer(currSession);
         } else {
-            SESSION_SERVICE.decrementCounter(currSession);
+            sessionService.decrementCounter(currSession);
 
             if (currSession.getCounter() > 0) {
                 currSession.getWords().add(word);
@@ -76,7 +76,7 @@ public class GameService {
                         + "\nОтвет: " + currSession.getCurrentWord()
                         + "\nЕсли слово не прошло валидацию, то введите команду report <word> и исключите его из словаря"
                         + "\nПример: report яблоко";
-                SESSION_SERVICE.clearSession(currSession, false);
+                sessionService.clearSession(currSession, false);
             }
         }
         return createMessage(chatId, answer);
@@ -101,21 +101,21 @@ public class GameService {
 
     @SneakyThrows
     private Session checkSession(Long chatId, String name) {
-        Optional<Session> optionalSession = SESSION_SERVICE.getSession(chatId);
+        Optional<Session> optionalSession = sessionService.getSession(chatId);
         if (optionalSession.isPresent()) {
             Session session = optionalSession.get();
-            PROFILE_SERVICE.incrementGames(name);
-            SESSION_SERVICE.updateWord(session);
+            profileService.incrementGames(name);
+            sessionService.updateWord(session);
             return session;
         }
-        return SESSION_SERVICE.createSession(chatId, name);
+        return sessionService.createSession(chatId, name);
     }
 
     @SneakyThrows
     public SendMessage getInfo(Long chatId, Message message) {
         StringBuilder answer = new StringBuilder();
         answer.append("Привет ").append(message.getChat().getFirstName());
-        Optional<Profile> optionalProfile = PROFILE_SERVICE.getProfile(chatId);
+        Optional<Profile> optionalProfile = profileService.getProfile(chatId);
         if (optionalProfile.isPresent()) {
             Profile profile = optionalProfile.get();
             answer.append("\nСтатистика игр: ");

@@ -16,8 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SessionService {
 
-    private final ProfileService PROFILE_SERVICE;
-    private final WordRepository WORD_REPOSITORY;
+    private final ProfileService profileService;
+    private final WordRepository wordRepository;
     private final Map<Long, Session> SESSIONS = new HashMap<>();
 
     public Optional<Session> getSession(Long chatId) {
@@ -27,7 +27,7 @@ public class SessionService {
     @Transactional
     public Session createSession(Long chatId, String name) {
         Word randomWord = getWord();
-        Profile profile = PROFILE_SERVICE.createProfile(chatId, name);
+        Profile profile = profileService.createProfile(chatId, name);
         Session session = new Session(profile, randomWord.getWord());
         SESSIONS.put(chatId, session);
         return session;
@@ -35,16 +35,16 @@ public class SessionService {
 
     public void clearSession(Session session, boolean isWin) {
         if (isWin) {
-            PROFILE_SERVICE.incrementWins(session.getProfile().getName());
+            profileService.incrementWins(session.getProfile().getName());
         }
         session.getWords().clear();
         session.getExactly().clear();
         session.getNotExactly().clear();
 
         String currentWord = session.getCurrentWord();
-        Word word = WORD_REPOSITORY.findByWord(currentWord).get();
+        Word word = wordRepository.findByWord(currentWord).get();
         word.setCountWin(word.getCountWin() + 1);
-        WORD_REPOSITORY.save(word);
+        wordRepository.save(word);
 
     }
 
@@ -60,9 +60,9 @@ public class SessionService {
     }
 
     private Word getWord() {
-        Word randomWord = WORD_REPOSITORY.getRandomWord();
+        Word randomWord = wordRepository.getRandomWord();
         randomWord.setCountTotal(randomWord.getCountTotal() + 1);
-        WORD_REPOSITORY.save(randomWord);
+        wordRepository.save(randomWord);
         return randomWord;
     }
 }
