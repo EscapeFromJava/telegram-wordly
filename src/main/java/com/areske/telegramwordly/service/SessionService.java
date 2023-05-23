@@ -1,6 +1,6 @@
 package com.areske.telegramwordly.service;
 
-import com.areske.telegramwordly.model.Profile;
+import com.areske.telegramwordly.model.entity.Profile;
 import com.areske.telegramwordly.model.Session;
 import com.areske.telegramwordly.model.entity.Word;
 import com.areske.telegramwordly.repository.WordRepository;
@@ -35,14 +35,14 @@ public class SessionService {
 
     public void clearSession(Session session, boolean isWin) {
         if (isWin) {
-            PROFILE_SERVICE.incrementWins(session.getProfile());
+            PROFILE_SERVICE.incrementWins(session.getProfile().getName());
         }
         session.getWords().clear();
         session.getExactly().clear();
         session.getNotExactly().clear();
 
         String currentWord = session.getCurrentWord();
-        Word word = WORD_REPOSITORY.findByWord(currentWord);
+        Word word = WORD_REPOSITORY.findByWord(currentWord).get();
         word.setCountWin(word.getCountWin() + 1);
         WORD_REPOSITORY.save(word);
 

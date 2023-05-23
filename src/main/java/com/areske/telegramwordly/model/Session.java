@@ -1,5 +1,6 @@
 package com.areske.telegramwordly.model;
 
+import com.areske.telegramwordly.model.entity.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

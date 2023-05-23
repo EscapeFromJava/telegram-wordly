@@ -1,8 +1,8 @@
 package com.areske.telegramwordly.service;
 
 
-import com.areske.telegramwordly.model.Profile;
 import com.areske.telegramwordly.model.Session;
+import com.areske.telegramwordly.model.entity.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -72,7 +72,10 @@ public class GameService {
                         + "\nОсталось попыток: " + currSession.getCounter();
 
             } else {
-                answer = "Ты проиграл!";
+                answer = "Ты проиграл!"
+                        + "\nОтвет: " + currSession.getCurrentWord()
+                        + "\nЕсли слово не прошло валидацию, то введите команду report <word> и исключите его из словаря"
+                        + "\nПример: report яблоко";
                 SESSION_SERVICE.clearSession(currSession, false);
             }
         }
@@ -101,7 +104,7 @@ public class GameService {
         Optional<Session> optionalSession = SESSION_SERVICE.getSession(chatId);
         if (optionalSession.isPresent()) {
             Session session = optionalSession.get();
-            PROFILE_SERVICE.incrementGames(session.getProfile());
+            PROFILE_SERVICE.incrementGames(name);
             SESSION_SERVICE.updateWord(session);
             return session;
         }

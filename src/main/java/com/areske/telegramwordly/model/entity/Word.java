@@ -19,4 +19,6 @@ public class Word {
     private Integer countWin;
     @Column(name = "count_total", columnDefinition = "integer default 0")
     private Integer countTotal;
+    @Column(name = "is_valid", columnDefinition = "boolean default true")
+    private Boolean isValid;
 }
