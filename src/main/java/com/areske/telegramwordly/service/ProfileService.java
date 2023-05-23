@@ -21,7 +21,7 @@ public class ProfileService {
     }
 
     public Optional<Profile> getProfile(Long chatId) {
-        return PROFILE_REPOSITORY.findById(chatId);
+        return PROFILE_REPOSITORY.findByChatId(chatId);
     }
 
     @Transactional

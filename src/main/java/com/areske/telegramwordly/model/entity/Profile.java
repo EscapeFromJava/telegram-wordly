@@ -14,6 +14,8 @@ public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "chat_id")
     private Long chatId;
     private String name;
     private int games = 0;
@@ -23,5 +25,4 @@ public class Profile {
         this.chatId = chatId;
         this.name = name;
     }
-
 }

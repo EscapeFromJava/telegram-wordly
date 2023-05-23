@@ -11,4 +11,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     Optional<Profile> findByName(String name);
 
+    Optional<Profile> findByChatId(Long id);
+
 }

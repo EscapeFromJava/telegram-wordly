@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  database:
+    image: postgres
+    container_name: "database"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - wordly-network
+    environment:
+      - POSTGRES_DB=wordly
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=bestuser
+
+  app:
+    build: .
+    container_name: app
+    ports:
+      - 8080:8080
+    networks:
+      - wordly-network
+    links:
+      - database
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://database:5432/wordly
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=bestuser
+      - BOT_NAME=
+      - BOT_TOKEN=
+      - YANDEX_API_KEY=
+
+networks:
+  wordly-network:
+
+volumes:
+  postgres-data:
