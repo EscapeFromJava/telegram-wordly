@@ -18,13 +18,16 @@ public class GameService {
 
     private final SessionService SESSION_SERVICE;
     private final ProfileService PROFILE_SERVICE;
+    private final ValidatorService VALIDATOR_SERVICE;
 
     @SneakyThrows
     public SendMessage sendWord(Long chatId, String word) {
         Session currSession = SESSION_SERVICE.getSession(chatId).get();
         String answer;
 
-        if (currSession.getCurrentWord().equals("")) {
+        if (!VALIDATOR_SERVICE.validateWord(word)) {
+            answer = "Ваше слово не прошло валидацию";
+        } else if (currSession.getCurrentWord().equals("")) {
             answer = "Введите команду /start чтобы начать игру";
         } else if (word.equalsIgnoreCase(currSession.getCurrentWord())) {
             answer = "Ты выиграл";
@@ -99,6 +102,7 @@ public class GameService {
         if (optionalSession.isPresent()) {
             Session session = optionalSession.get();
             PROFILE_SERVICE.incrementGames(session.getProfile());
+            SESSION_SERVICE.updateWord(session);
             return session;
         }
         return SESSION_SERVICE.createSession(chatId, name);

@@ -24,9 +24,9 @@ public class SessionService {
         return Optional.ofNullable(SESSIONS.get(chatId));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Session createSession(Long chatId, String name) {
-        Word randomWord = WORD_REPOSITORY.getRandomWord();
+        Word randomWord = getWord();
         Profile profile = PROFILE_SERVICE.createProfile(chatId, name);
         Session session = new Session(profile, randomWord.getWord());
         SESSIONS.put(chatId, session);
@@ -40,10 +40,29 @@ public class SessionService {
         session.getWords().clear();
         session.getExactly().clear();
         session.getNotExactly().clear();
+
+        String currentWord = session.getCurrentWord();
+        Word word = WORD_REPOSITORY.findByWord(currentWord);
+        word.setCountWin(word.getCountWin() + 1);
+        WORD_REPOSITORY.save(word);
+
     }
 
     public void decrementCounter(Session currSession) {
         currSession.setCounter(currSession.getCounter() - 1);
     }
 
+    @Transactional
+    public void updateWord(Session session) {
+        Word randomWord = getWord();
+
+        session.setCurrentWord(randomWord.getWord());
+    }
+
+    private Word getWord() {
+        Word randomWord = WORD_REPOSITORY.getRandomWord();
+        randomWord.setCountTotal(randomWord.getCountTotal() + 1);
+        WORD_REPOSITORY.save(randomWord);
+        return randomWord;
+    }
 }

@@ -15,6 +15,8 @@ public class Word {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String word;
-    @Column(columnDefinition = "integer default 0")
-    private Integer count;
+    @Column(name = "count_win", columnDefinition = "integer default 0")
+    private Integer countWin;
+    @Column(name = "count_total", columnDefinition = "integer default 0")
+    private Integer countTotal;
 }
